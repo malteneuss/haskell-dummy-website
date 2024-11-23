@@ -28,6 +28,8 @@
               Restart = "always";
               DynamicUser = true;
               # Environment = "RUST_LOG=info";
+              StateDirectory = ["haskell-dummy-website"]; # Set the state directory
+              WorkingDirectory = "/var/lib/haskell-dummy-website"; # Set the working directory to state directory
             };
             wantedBy = [ "multi-user.target" ];
           };
