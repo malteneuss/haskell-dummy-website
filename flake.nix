@@ -10,14 +10,30 @@
     fourmolu-nix.url = "github:jedimahdi/fourmolu-nix";
   };
 
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = inputs@{self, flake-parts, ...}:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
       imports = [
         inputs.haskell-flake.flakeModule
         inputs.treefmt-nix.flakeModule
         inputs.fourmolu-nix.flakeModule
       ];
+      flake = {
+        nixosModules.module-haskell-dummy-website = { system, ... }: {
+          systemd.services.haskell-dummy-website = {
+            enable = true;
+            # package = haskellapp.packages.${system}.haskell-dummy-website;
+            serviceConfig = {
+              ExecStart = "${self.packages.${system}.haskell-dummy-website}/bin/haskell-dummy-website";
+              Restart = "always";
+              DynamicUser = true;
+              # Environment = "RUST_LOG=info";
+            };
+            wantedBy = [ "multi-user.target" ];
+          };
+          networking.firewall.allowedTCPPorts = [ 8081 ];
+        };
+      };
       perSystem = { self', system, lib, config, pkgs, ... }: {
         # Our only Haskell project. You can have multiple projects, but this template
         # has only one.
