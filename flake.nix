@@ -44,14 +44,19 @@
         # haskellProjects.haskell-dummy-website = {
           # To avoid unnecessary rebuilds, we filter projectRoot:
           # https://community.flake.parts/haskell-flake/local#rebuild
-          projectRoot = builtins.toString (lib.fileset.toSource {
-            root = ./.;
-            fileset = lib.fileset.unions [
-              ./haskell-dummy-website.cabal
-              ./app
-              ./CHANGELOG.md
-            ];
-          });
+          # projectRoot = builtins.toString (lib.fileset.toSource {
+          #   root = ./.;
+          #   fileset = lib.fileset.unions [
+          #     # ./haskell-dummy-website.cabal
+          #     # ./app
+          #     ./subpackage/subapp.cabal
+          #     ./subpackage/app
+          #     ./CHANGELOG.md
+          #   ];
+          # });
+          # defaults.packages = {
+          #   subapp.source = ./subpackage;
+          # };
 
           # The base package set (this value is the default)
 # basePackages = pkgs.haskellPackages.override {
@@ -66,21 +71,21 @@
 
 
           # Packages to add on top of `basePackages`
-          packages = {
-            # Add source or Hackage overrides here
-            # (Local packages are added automatically)
-# aeson.source = "1.5.0.0" # Hackage version
-# shower.source = inputs.shower; # Flake input
-# broken in nixpkgs, force to use openai-hs
+#           packages = {
+#             # Add source or Hackage overrides here
+#             # (Local packages are added automatically)
+# # aeson.source = "1.5.0.0" # Hackage version
+# # shower.source = inputs.shower; # Flake input
+# # broken in nixpkgs, force to use openai-hs
 
 
-# openai-hs = {
-#   source = "0.3.0.1";
-#   doCheck = false;
-# };
+# # openai-hs = {
+# #   source = "0.3.0.1";
+# #   doCheck = false;
+# # };
 
 
-          };
+#           };
 
           # Add your package overrides here
           settings = {
@@ -120,7 +125,7 @@ broken = false;
         };
 
         # Default package & app.
-        # packages.default = self'.packages.haskell-template;
+        # packages.default = self'.packages.subpackage;
         # apps.default = self'.apps.haskell-template;
 
         # Default shell.
